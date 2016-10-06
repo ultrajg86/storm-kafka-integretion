@@ -1,4 +1,4 @@
-package com.imi;
+package com.imi.producer;
 
 import java.util.Properties;
 
@@ -16,7 +16,6 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
 public class TridentKafkaTopology {
-
 	private static StormTopology buildTopology(String brokerConnectionString) {
         Fields fields = new Fields("word", "count");
         FixedBatchSpout spout = new FixedBatchSpout(fields, 4,
@@ -71,5 +70,4 @@ public class TridentKafkaTopology {
 
         cluster.shutdown();
     }
-
 }
