@@ -47,7 +47,7 @@ public class Topology {
 		TopologyBuilder builder = new TopologyBuilder();	
 		KafkaSpout kafkaSpout = spoutBuilder.buildKafkaSpout();
 		SinkTypeBolt sinkTypeBolt = boltBuilder.buildSinkTypeBolt();
-		SolrBolt solrBolt = boltBuilder.buildSolrBolt();
+		//SolrBolt solrBolt = boltBuilder.buildSolrBolt();
 		HdfsBolt hdfsBolt = boltBuilder.buildHdfsBolt();
 		MongodbBolt mongoBolt = boltBuilder.buildMongodbBolt();
 		
@@ -64,7 +64,7 @@ public class Topology {
 		
 		//set the solr bolt
 		int solrBoltCount = Integer.parseInt(configs.getProperty(Keys.SOLR_BOLT_COUNT));
-		builder.setBolt(configs.getProperty(Keys.SOLR_BOLT_ID), solrBolt,solrBoltCount).shuffleGrouping(configs.getProperty(Keys.SINK_TYPE_BOLT_ID),SOLR_STREAM);
+		//builder.setBolt(configs.getProperty(Keys.SOLR_BOLT_ID), solrBolt,solrBoltCount).shuffleGrouping(configs.getProperty(Keys.SINK_TYPE_BOLT_ID),SOLR_STREAM);
 			
 		//set the hdfs bolt
 		int hdfsBoltCount = Integer.parseInt(configs.getProperty(Keys.HDFS_BOLT_COUNT));
