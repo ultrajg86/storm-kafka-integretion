@@ -1,5 +1,8 @@
 package com.imi;
 
+import java.util.Arrays;
+
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.storm.Config;
 import org.apache.storm.StormSubmitter;
@@ -12,43 +15,29 @@ import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.topology.TopologyBuilder;
 
 import com.imi.bolt.CutLogBolt;
-import com.imi.log.CustomLog;
 
 public class Topology {
-
+	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		
-		CustomLog log = new CustomLog();
-		
-		String zkUrl = "";
-		String zkRoot = "";
-		String topology = "";
-		String topic = "";
-		String groupId = "";
-		
 		if(args.length != 5){
-			System.out.println("Usage : [zookeeper url] [zookeeper root] [topology] [topic] [group_id]");
+			System.out.println("Usage : [zookeeper] [nimbus] [topology] [topic] [group_id]");
 			System.exit(0);
 		}
 		
-		zkUrl = args[0];
-		zkRoot = args[1];
-		topology = args[2];
-		topic = args[3];
-		groupId = args[4];
-		
-		
-		log.info("[TEST INFO] " + zkUrl + "|" + zkRoot + "|" + topology + "|" + topic + "|" + groupId);
-		log.info("[TEST INFO] START");
+		String zkUrl = args[0];
+		String zkRoot = "/consumers";
+		String nimbusHost = args[1];
+		String topology = args[2];
+		String topic = args[3];
+		String groupId = args[4];
 		
 		//kafka spout config
-		BrokerHosts hosts = new ZkHosts(zkUrl);
+		BrokerHosts hosts = new ZkHosts(zkUrl + ":2181");
 		SpoutConfig spoutConfig = new SpoutConfig(hosts, topic, zkRoot, groupId);
 		spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
 		KafkaSpout kafkaSpout = new KafkaSpout(spoutConfig);
-		
-		log.info("[TEST INFO] kafka config finish");
 		
 		TopologyBuilder builder = new TopologyBuilder();
 		builder.setSpout("kafka-spout", kafkaSpout, 1);
@@ -58,6 +47,11 @@ public class Topology {
 		Config config = new Config();
 		config.setDebug(true);
 		config.setNumWorkers(1);
+		config.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, 2);
+		config.put(Config.NIMBUS_HOST, nimbusHost);
+		config.put(Config.NIMBUS_THRIFT_PORT, 6627);
+		config.put(Config.STORM_ZOOKEEPER_PORT, 2181);
+		config.put(Config.STORM_ZOOKEEPER_SERVERS, Arrays.asList(zkUrl));
 		StormSubmitter.submitTopology(topology, config, builder.createTopology());
 		
 	}

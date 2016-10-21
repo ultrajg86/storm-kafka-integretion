@@ -2,6 +2,7 @@ package com.imi.bolt;
 
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -11,11 +12,10 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import com.imi.Topology;
 import com.imi.log.CustomLog;
 
 public class CutLogBolt extends BaseRichBolt {
-	
-	
 	
 	private static final long serialVersionUID = 1L;
 	private OutputCollector collector;
@@ -28,14 +28,8 @@ public class CutLogBolt extends BaseRichBolt {
 
 	@Override
 	public void execute(Tuple tuple) {
-		// TODO Auto-generated method stub
-		
-		CustomLog log = new CustomLog();
-		
+		// TODO Auto-generated method stub		
 		String value = tuple.toString();
-		
-		log.info("[TEST INFO] TUPLE : " + tuple);
-		log.info("[TEST INFO] VALUE : " + value);
 		
 		int index = value.indexOf(" ");
 		if(index == -1){
